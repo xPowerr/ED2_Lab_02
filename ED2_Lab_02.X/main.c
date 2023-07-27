@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include "LCD.h"
 #include "ADC_setup.h"
+#include "UART.h"
 
 // --------------- Frecuencia ---------------
 #define _XTAL_FREQ 4000000
@@ -40,26 +41,33 @@ int adc_var = 0; // variable para almacenar el valor leido del ADC
 int select = 0; // variable para el selector del muxeo del display
 char display[3]; // array para caracteres de la lcd
 int voltage1 = 0; // valor del mapeo del adc
+int counter = 0; // variable para el contador del uart
+char display_counter[1]; // array para caracteres de la lcd
 
 uint8_t uni_volt = 0; // variable para unidades de voltaje
 uint8_t dec_volt = 0; // variable para decimas de voltaje
 uint8_t cen_volt = 0; // variable para centesimas de voltaje
 
 // --------------- Prototipos ---------------
-void setup(void);
+void setup(void); // funcion de configuracion
+void cadena(char *cursor); //función para desplegar caracteres en la terminal UART
 //void counter(void); // función del contador
 //void setupADC(void);
 
 // --------------- Loop principal ---------------
 void main(void){
-    setup();
-    adc_init(0);
+    setup(); // Llamada a la funcion de configuracion
+    adc_init(0); // Se inicializa el ADC para el canal AN0
+    UART_config(4800); // Se configura UART con baudrate de 4800
     
     //------------LCD------------------------
     Lcd_Init(); // Iniciar la LCD
     Lcd_Clear(); // Limpiar la LCD
     Lcd_Set_Cursor(1,1);
     Lcd_Write_String("Pot1:");
+    
+    Lcd_Set_Cursor(1,8);
+    Lcd_Write_String("Count:");
     
     while(1){
         
@@ -69,13 +77,19 @@ void main(void){
         cen_volt = (voltage1*5) % 10;
         
         Lcd_Set_Cursor(2,1);
-        sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt);
+        sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt); // llenar arreglo de caracteres para enviar a lcd
         Lcd_Write_String(display);
         
         // Mostrar el valor del ADC en la LCD
         //Lcd_Write_Char('0' + (uni_volt)); // Muestra el dígito de las centenas
         //Lcd_Write_Char('0' + ((dec_volt))); // Muestra el dígito de las decenas
         //Lcd_Write_Char('0' + (cen_volt)); // Muestra el dígito de las unidades
+        
+        
+        Lcd_Set_Cursor(2,9);
+        sprintf(display_counter, "%03d", counter); // convertir la variable a caracter para la lcd
+        Lcd_Write_String(display_counter);
+        
         
         if (ADCON0bits.GO == 0) { // si la lectura del ADC se desactiva
             ADCON0bits.GO = 1; // activarla
@@ -91,7 +105,32 @@ void __interrupt() isr(void){ // interrupciones
         adc_var = adc_read();
         PIR1bits.ADIF = 0; // limpiar bandera
     }
+    if (PIR1bits.RCIF == 1){ //Revisar interrupcion del Receptor del UART
+        PIR1bits.RCIF = 0; //Limpiar la bandera de interrupcion del receptor del UART
+        if (RCREG == '+'){ //Revisar si se recibió un '+'
+            if (counter == 255){ // hacer que no pase de 255, 8 bits
+                counter = 0;
+            }
+            else {
+            counter++; //Aumentar contador
+            }
+        }    
+        if (RCREG == '-'){ //Revisar si se recibió un '-'
+            if (counter == 0){ // hacer que no sea negativo, 8 bits
+                counter = 255;
+            }
+            else {
+            counter--; //Decrementar contador
+            }
+        }
+        if (RCREG == 13){
+            cadena("Voltaje Potenciometro: \r\n"); //Escribir en la terminal UART
+            sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt); //convertir variable a una cadena de caracteres
+            cadena(display); //Mostrar variable en la terminal
+            cadena("\n\r"); //Enter
+        }
     }
+}
 
 // --------------- Setup General ---------------
 void setup(void){
@@ -143,3 +182,11 @@ void setup(void){
     OSCCONbits.SCS = 1; // utilizar oscilador interno
 }
 
+//Funcion para mostrar texto
+void cadena(char *cursor){
+    while (*cursor != '\0'){//mientras el cursor sea diferente a nulo
+        while (PIR1bits.TXIF == 0); //mientras que se este enviando no hacer nada
+            TXREG = *cursor; //asignar el valor del cursor para enviar
+            *cursor++;//aumentar posicion del cursor
+    }
+}

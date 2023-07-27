@@ -1,4 +1,4 @@
-# 1 "main.c"
+# 1 "UART.c"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
 # 288 "<built-in>" 3
@@ -6,22 +6,11 @@
 # 1 "<built-in>" 2
 # 1 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\language_support.h" 1 3
 # 2 "<built-in>" 2
-# 1 "main.c" 2
-# 10 "main.c"
-#pragma config FOSC = INTRC_NOCLKOUT
-#pragma config WDTE = OFF
-#pragma config PWRTE = OFF
-#pragma config MCLRE = OFF
-#pragma config CP = OFF
-#pragma config CPD = OFF
-#pragma config BOREN = OFF
-#pragma config IESO = OFF
-#pragma config FCMEN = OFF
-#pragma config LVP = OFF
+# 1 "UART.c" 2
 
 
-#pragma config BOR4V = BOR40V
-#pragma config WRT = OFF
+
+
 
 
 
@@ -2642,144 +2631,7 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 29 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\xc.h" 2 3
-# 26 "main.c" 2
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdint.h" 1 3
-# 27 "main.c" 2
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 1 3
-
-
-
-# 1 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\__size_t.h" 1 3
-
-
-
-typedef unsigned size_t;
-# 4 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 2 3
-
-# 1 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\__null.h" 1 3
-# 5 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 2 3
-
-
-
-
-
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdarg.h" 1 3
-
-
-
-
-
-
-typedef void * va_list[1];
-
-#pragma intrinsic(__va_start)
-extern void * __va_start(void);
-
-#pragma intrinsic(__va_arg)
-extern void * __va_arg(void *, ...);
-# 11 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 2 3
-# 43 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 3
-struct __prbuf
-{
- char * ptr;
- void (* func)(char);
-};
-# 85 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 3
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\conio.h" 1 3
-
-
-
-
-
-
-
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\errno.h" 1 3
-# 29 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\errno.h" 3
-extern int errno;
-# 8 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\conio.h" 2 3
-
-
-
-
-extern void init_uart(void);
-
-extern char getch(void);
-extern char getche(void);
-extern void putch(char);
-extern void ungetch(char);
-
-extern __bit kbhit(void);
-
-
-
-extern char * cgets(char *);
-extern void cputs(const char *);
-# 85 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 2 3
-
-
-
-extern int cprintf(char *, ...);
-#pragma printf_check(cprintf)
-
-
-
-extern int _doprnt(struct __prbuf *, const register char *, register va_list);
-# 180 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdio.h" 3
-#pragma printf_check(vprintf) const
-#pragma printf_check(vsprintf) const
-
-extern char * gets(char *);
-extern int puts(const char *);
-extern int scanf(const char *, ...) __attribute__((unsupported("scanf() is not supported by this compiler")));
-extern int sscanf(const char *, const char *, ...) __attribute__((unsupported("sscanf() is not supported by this compiler")));
-extern int vprintf(const char *, va_list) __attribute__((unsupported("vprintf() is not supported by this compiler")));
-extern int vsprintf(char *, const char *, va_list) __attribute__((unsupported("vsprintf() is not supported by this compiler")));
-extern int vscanf(const char *, va_list ap) __attribute__((unsupported("vscanf() is not supported by this compiler")));
-extern int vsscanf(const char *, const char *, va_list) __attribute__((unsupported("vsscanf() is not supported by this compiler")));
-
-#pragma printf_check(printf) const
-#pragma printf_check(sprintf) const
-extern int sprintf(char *, const char *, ...);
-extern int printf(const char *, ...);
-# 28 "main.c" 2
-
-# 1 "./LCD.h" 1
-# 63 "./LCD.h"
-void Lcd_Port(char a);
-
-void Lcd_Cmd(char a);
-
-void Lcd_Clear(void);
-
-void Lcd_Set_Cursor(char a, char b);
-
-void Lcd_Init(void);
-
-void Lcd_Write_Char(char a);
-
-void Lcd_Write_String(char *a);
-
-void Lcd_Shift_Right(void);
-
-void Lcd_Shift_Left(void);
-# 29 "main.c" 2
-
-# 1 "./ADC_setup.h" 1
-# 14 "./ADC_setup.h"
-# 1 "C:\\Program Files\\Microchip\\xc8\\v2.40\\pic\\include\\c90\\stdint.h" 1 3
-# 14 "./ADC_setup.h" 2
-
-
-
-void adc_init(int channel);
-int adc_read();
-void adc_change_channel(int channel);
-int adc_get_channel();
-int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax);
-# 30 "main.c" 2
+# 8 "UART.c" 2
 
 # 1 "./UART.h" 1
 # 14 "./UART.h"
@@ -2790,144 +2642,29 @@ int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax);
 void UART_config (uint16_t baudrate);
 void UART_write_char (char character);
 char UART_read_char (void);
-# 31 "main.c" 2
+# 9 "UART.c" 2
 
 
+void UART_config(uint16_t baudrate){
+    PIE1bits.RCIE = 1;
 
+    if (baudrate == 4800){
+    SPBRG = 12;
 
+    TXSTAbits.SYNC = 0;
+    RCSTAbits.SPEN = 1;
 
-
-
-int bandera = 0;
-
-int adc_var = 0;
-int select = 0;
-char display[3];
-int voltage1 = 0;
-int counter = 0;
-char display_counter[1];
-
-uint8_t uni_volt = 0;
-uint8_t dec_volt = 0;
-uint8_t cen_volt = 0;
-
-
-void setup(void);
-void cadena(char *cursor);
-
-
-
-
-void main(void){
-    setup();
-    adc_init(0);
-    UART_config(4800);
-
-
-    Lcd_Init();
-    Lcd_Clear();
-    Lcd_Set_Cursor(1,1);
-    Lcd_Write_String("Pot1:");
-
-    Lcd_Set_Cursor(1,8);
-    Lcd_Write_String("Count:");
-
-    while(1){
-
-        voltage1 = map_adc_volt(adc_var, 0, 255, 0, 100);
-        uni_volt = (voltage1*5) / 100;
-        dec_volt = (voltage1*5)/10 % 10;
-        cen_volt = (voltage1*5) % 10;
-
-        Lcd_Set_Cursor(2,1);
-        sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt);
-        Lcd_Write_String(display);
-
-
-
-
-
-
-
-        Lcd_Set_Cursor(2,9);
-        sprintf(display_counter, "%03d", counter);
-        Lcd_Write_String(display_counter);
-
-
-        if (ADCON0bits.GO == 0) {
-            ADCON0bits.GO = 1;
-            _delay((unsigned long)((50)*(4000000/4000.0)));
-        }
-
+    TXSTAbits.TXEN = 1;
+    PIR1bits.TXIF = 0;
+    RCSTAbits.CREN = 1;
     }
 }
 
-
-void __attribute__((picinterrupt(("")))) isr(void){
-    if (PIR1bits.ADIF == 1){
-        adc_var = adc_read();
-        PIR1bits.ADIF = 0;
-    }
-    if (PIR1bits.RCIF == 1){
-        PIR1bits.RCIF = 0;
-        if (RCREG == '+'){
-            if (counter == 255){
-                counter = 0;
-            }
-            else {
-            counter++;
-            }
-        }
-        if (RCREG == '-'){
-            if (counter == 0){
-                counter = 255;
-            }
-            else {
-            counter--;
-            }
-        }
-        if (RCREG == 13){
-            cadena("Voltaje Potenciometro: \r\n");
-            sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt);
-            cadena(display);
-            cadena("\n\r");
-        }
-    }
+void UART_write_char (char character){
+    TXSTAbits.TXEN = 1;
+    PIR1bits.TXIF = 0;
 }
 
-
-void setup(void){
-# 149 "main.c"
-    TRISB = 0;
-    TRISC = 0;
-    TRISD = 0;
-
-
-
-    PORTA = 0;
-    PORTB = 0;
-    PORTC = 0;
-    PORTD = 0;
-    PORTE = 0;
-
-
-
-
-
-
-
-    INTCONbits.GIE = 1;
-    INTCONbits.PEIE = 1;
-# 181 "main.c"
-    OSCCONbits.IRCF = 0b110 ;
-    OSCCONbits.SCS = 1;
-}
-
-
-void cadena(char *cursor){
-    while (*cursor != '\0'){
-        while (PIR1bits.TXIF == 0);
-            TXREG = *cursor;
-            *cursor++;
-    }
+char UART_read_char (void){
+    RCSTAbits.CREN = 1;
 }

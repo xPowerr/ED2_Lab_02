@@ -1,4 +1,5 @@
 build/default/production/main.p1:  \
 main.c  \
 LCD.h  \
-ADC_setup.h 
+ADC_setup.h  \
+UART.h 
