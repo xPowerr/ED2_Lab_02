@@ -25,11 +25,12 @@
 // --------------- Librerias ---------------
 #include <xc.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "LCD.h"
 #include "ADC_setup.h"
 
 // --------------- Frecuencia ---------------
-#define _XTAL_FREQ 8000000
+#define _XTAL_FREQ 4000000
 
 
 // --------------- Variables ---------------
@@ -37,6 +38,12 @@ int bandera = 0; // variable para el antirrebotes
 //char button = 0; // variable para la libreria de IOCB
 int adc_var = 0; // variable para almacenar el valor leido del ADC
 int select = 0; // variable para el selector del muxeo del display
+char display[3]; // array para caracteres de la lcd
+int voltage1 = 0; // valor del mapeo del adc
+
+uint8_t uni_volt = 0; // variable para unidades de voltaje
+uint8_t dec_volt = 0; // variable para decimas de voltaje
+uint8_t cen_volt = 0; // variable para centesimas de voltaje
 
 // --------------- Prototipos ---------------
 void setup(void);
@@ -52,15 +59,23 @@ void main(void){
     Lcd_Init(); // Iniciar la LCD
     Lcd_Clear(); // Limpiar la LCD
     Lcd_Set_Cursor(1,1);
-    Lcd_Write_String("ADC");
+    Lcd_Write_String("Pot1:");
     
     while(1){
         
+        voltage1 = map_adc_volt(adc_var, 0, 255, 0, 100);
+        uni_volt = (voltage1*5) / 100;
+        dec_volt = (voltage1*5)/10 % 10;
+        cen_volt = (voltage1*5) % 10;
+        
         Lcd_Set_Cursor(2,1);
+        sprintf(display, "%d.%d%dV", uni_volt, dec_volt, cen_volt);
+        Lcd_Write_String(display);
+        
         // Mostrar el valor del ADC en la LCD
-        Lcd_Write_Char('0' + (adc_var / 100)); // Muestra el dígito de las centenas
-        Lcd_Write_Char('0' + ((adc_var / 10) % 10)); // Muestra el dígito de las decenas
-        Lcd_Write_Char('0' + (adc_var % 10)); // Muestra el dígito de las unidades
+        //Lcd_Write_Char('0' + (uni_volt)); // Muestra el dígito de las centenas
+        //Lcd_Write_Char('0' + ((dec_volt))); // Muestra el dígito de las decenas
+        //Lcd_Write_Char('0' + (cen_volt)); // Muestra el dígito de las unidades
         
         if (ADCON0bits.GO == 0) { // si la lectura del ADC se desactiva
             ADCON0bits.GO = 1; // activarla
@@ -92,9 +107,10 @@ void setup(void){
     //TRISBbits.TRISB0 = 0;
     //TRISBbits.TRISB1 = 0;
     
+    TRISB = 0; // Puerto B como salida - LCD
     TRISC = 0;
-    TRISD = 0;
-    TRISE = 0;
+    TRISD = 0; // Puerto D como salida para RS y EN de LCD
+    //TRISE = 0;
     
 // --------------- Limpiar puertos ---------------    
     PORTA = 0;
@@ -123,41 +139,7 @@ void setup(void){
     //INTCONbits.RBIF = 0;  // Limpiar bandera de interrupcion de PORTB
     
 // --------------- Oscilador --------------- 
-    OSCCONbits.IRCF = 0b111 ; // establecerlo en 8 MHz
+    OSCCONbits.IRCF = 0b110 ; // establecerlo en 4 MHz
     OSCCONbits.SCS = 1; // utilizar oscilador interno
 }
 
-// --------------- Setup del ADC ---------------
-//void setupADC(void){
-    
-    //adc_init(0);
-    
-    //ADCON0bits.ADCS1 = 0; // Fosc/2        
-    //ADCON0bits.ADCS0 = 0; // =======      
-    
-    //ADCON1bits.VCFG1 = 0; // Referencia VSS (0 Volts)
-    //ADCON1bits.VCFG0 = 0; // Referencia VDD (5 Volts)
-    
-    //ADCON1bits.ADFM = 0;  // Justificado hacia izquierda
-    
-    //ADCON0bits.CHS0 = 0; // Canal AN0     
-    
-    //ADCON0bits.ADON = 1; // Habilitamos el ADC
-    //__delay_us(100); //delay de 100 us
-//}
-
-// --------------- Funciones ---------------    
-void counter(void){ 
-    if (PORTBbits.RB6 == 0){ // revisar si se presiono el botón de incrementar
-        bandera = 1;} // activar bandera
-    if (PORTBbits.RB6 == 1 && bandera == 1){ // revisar si se dejo de presionar el botón y la bandera está en 1
-        PORTD--; // incrementar
-        bandera = 0; // limpiar bandera
-    }
-    if (PORTBbits.RB7 == 0){ // revisar si se presiono el botón de decrementar
-        bandera = 2;} // activar bandera
-    if (PORTBbits.RB7 == 1 && bandera == 2){ // revisar si se dejo de presionar el botón y la bandera está en 1
-        PORTD++; // decrementar el puerto
-        bandera = 0; // limpiar bandera
-    }
-}    

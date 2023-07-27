@@ -340,8 +340,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;ADC_setup.c: 30:     ADCON0bits.ADON = 1;
 [e = . . _ADCON0bits 0 0 -> -> 1 `i `uc ]
 "31
-[; ;ADC_setup.c: 31:     _delay((unsigned long)((100)*(8000000/4000000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 8000000 `l `d .4000000.0 `ul ]
+[; ;ADC_setup.c: 31:     _delay((unsigned long)((100)*(4000000/4000000.0)));
+[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 4000000 `l `d .4000000.0 `ul ]
 "32
 [; ;ADC_setup.c: 32: }
 [e :UE 138 ]
@@ -744,4 +744,21 @@ Version 4.0 HI-TECH Software Intermediate Code
 "140
 [; ;ADC_setup.c: 140: }
 [e :UE 155 ]
+}
+"141
+[; ;ADC_setup.c: 141: int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax){
+[v _map_adc_volt `(i ~T0 @X0 1 ef5`i`i`i`i`i ]
+{
+[e :U _map_adc_volt ]
+[v _value `i ~T0 @X0 1 r1 ]
+[v _inputmin `i ~T0 @X0 1 r2 ]
+[v _inputmax `i ~T0 @X0 1 r3 ]
+[v _outmin `i ~T0 @X0 1 r4 ]
+[v _outmax `i ~T0 @X0 1 r5 ]
+[f ]
+"142
+[; ;ADC_setup.c: 142:     return ((value - inputmin)*(outmax-outmin)) / (inputmax-inputmin)+outmin;}
+[e ) + / * - _value _inputmin - _outmax _outmin - _inputmax _inputmin _outmin ]
+[e $UE 170  ]
+[e :UE 170 ]
 }

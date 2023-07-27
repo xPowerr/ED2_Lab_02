@@ -9,7 +9,7 @@
 # 1 "LCD.c" 2
 # 11 "LCD.c"
 # 1 "./LCD.h" 1
-# 42 "./LCD.h"
+# 58 "./LCD.h"
 # 1 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\xc.h" 1 3
 # 18 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\xc.h" 3
 extern const char __xc8_OPTIM_SPEED;
@@ -2627,7 +2627,7 @@ extern __bank0 unsigned char __resetbits;
 extern __bank0 __bit __powerdown;
 extern __bank0 __bit __timeout;
 # 29 "C:/Program Files/Microchip/MPLABX/v6.05/packs/Microchip/PIC16Fxxx_DFP/1.3.42/xc8\\pic\\include\\xc.h" 2 3
-# 42 "./LCD.h" 2
+# 58 "./LCD.h" 2
 
 
 
@@ -2655,32 +2655,52 @@ void Lcd_Shift_Left(void);
 
 void Lcd_Port(char a) {
     if (a & 1)
-        RD4 = 1;
+        PORTDbits.RD0 = 1;
     else
-        RD4 = 0;
+        PORTDbits.RD0 = 0;
 
     if (a & 2)
-        RD5 = 1;
+        PORTDbits.RD1 = 1;
     else
-        RD5 = 0;
+        PORTDbits.RD1 = 0;
 
     if (a & 4)
-        RD6 = 1;
+        PORTDbits.RD2 = 1;
     else
-        RD6 = 0;
+        PORTDbits.RD2 = 0;
 
     if (a & 8)
-        RD7 = 1;
+        PORTDbits.RD3 = 1;
     else
-        RD7 = 0;
+        PORTDbits.RD3 = 0;
+
+    if (a & 16)
+        PORTDbits.RD4 = 1;
+    else
+        PORTDbits.RD4 = 0;
+
+    if (a & 32)
+        PORTDbits.RD5 = 1;
+    else
+        PORTDbits.RD5 = 0;
+
+    if (a & 64)
+        PORTDbits.RD6 = 1;
+    else
+        PORTDbits.RD6 = 0;
+
+    if (a & 128)
+        PORTDbits.RD7 = 1;
+    else
+        PORTDbits.RD7 = 0;
 }
 
 void Lcd_Cmd(char a) {
-    PORTDbits.RD2 = 0;
+    PORTCbits.RC4 = 0;
     Lcd_Port(a);
-    RD3 = 1;
-    _delay((unsigned long)((4)*(8000000/4000.0)));
-    RD3 = 0;
+    PORTCbits.RC5 = 1;
+    _delay((unsigned long)((4)*(4000000/4000.0)));
+    PORTCbits.RC5 = 0;
 }
 
 void Lcd_Clear(void) {
@@ -2692,50 +2712,35 @@ void Lcd_Set_Cursor(char a, char b) {
     char temp, z, y;
     if (a == 1) {
         temp = 0x80 + b - 1;
-        z = temp >> 4;
-        y = temp & 0x0F;
-        Lcd_Cmd(z);
-        Lcd_Cmd(y);
+        Lcd_Cmd(temp);
     } else if (a == 2) {
         temp = 0xC0 + b - 1;
-        z = temp >> 4;
-        y = temp & 0x0F;
-        Lcd_Cmd(z);
-        Lcd_Cmd(y);
+        Lcd_Cmd(temp);
     }
 }
 
 void Lcd_Init(void) {
     Lcd_Port(0x00);
-    _delay((unsigned long)((20)*(8000000/4000.0)));
-    Lcd_Cmd(0x03);
-    _delay((unsigned long)((5)*(8000000/4000.0)));
-    Lcd_Cmd(0x03);
-    _delay((unsigned long)((11)*(8000000/4000.0)));
-    Lcd_Cmd(0x03);
-
-    Lcd_Cmd(0x02);
-    Lcd_Cmd(0x02);
+    _delay((unsigned long)((20)*(4000000/4000.0)));
+    Lcd_Cmd(0x030);
+    _delay((unsigned long)((5)*(4000000/4000.0)));
+    Lcd_Cmd(0x030);
+    _delay((unsigned long)((200)*(4000000/4000000.0)));
+    Lcd_Cmd(0x030);
+    Lcd_Cmd(0x38);
     Lcd_Cmd(0x08);
-    Lcd_Cmd(0x00);
-    Lcd_Cmd(0x0C);
-    Lcd_Cmd(0x00);
+    Lcd_Cmd(0x01);
     Lcd_Cmd(0x06);
+    Lcd_Cmd(0x0C);
+    _delay((unsigned long)((100)*(4000000/4000000.0)));
 }
 
 void Lcd_Write_Char(char a) {
-    char temp, y;
-    temp = a & 0x0F;
-    y = a & 0xF0;
-    PORTDbits.RD2 = 1;
-    Lcd_Port(y >> 4);
-    RD3 = 1;
-    _delay((unsigned long)((40)*(8000000/4000000.0)));
-    RD3 = 0;
-    Lcd_Port(temp);
-    RD3 = 1;
-    _delay((unsigned long)((40)*(8000000/4000000.0)));
-    RD3 = 0;
+    PORTCbits.RC4 = 1;
+    Lcd_Port(a);
+    PORTCbits.RC5 = 1;
+    _delay((unsigned long)((40)*(4000000/4000000.0)));
+    PORTCbits.RC5 = 0;
 }
 
 void Lcd_Write_String(char *a) {

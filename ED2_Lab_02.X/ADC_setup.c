@@ -8,7 +8,7 @@
 #include "ADC_setup.h"
 
 // --------------- Frecuencia ---------------
-#define _XTAL_FREQ 8000000
+#define _XTAL_FREQ 4000000
 
 // --------------- Setup del ADC --------------- 
 
@@ -138,3 +138,5 @@ int adc_get_channel(){
         return 13;
     }
 }
+int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax){ // Función para mapear valores
+    return ((value - inputmin)*(outmax-outmin)) / (inputmax-inputmin)+outmin;} 

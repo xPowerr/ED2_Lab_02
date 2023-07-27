@@ -2644,6 +2644,7 @@ void adc_init(int channel);
 int adc_read();
 void adc_change_channel(int channel);
 int adc_get_channel();
+int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax);
 # 8 "ADC_setup.c" 2
 
 
@@ -2668,7 +2669,7 @@ void adc_init(int channel){
     adc_change_channel(channel);
 
     ADCON0bits.ADON = 1;
-    _delay((unsigned long)((100)*(8000000/4000000.0)));
+    _delay((unsigned long)((100)*(4000000/4000000.0)));
 }
 
 int adc_read(){
@@ -2778,3 +2779,5 @@ int adc_get_channel(){
         return 13;
     }
 }
+int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax){
+    return ((value - inputmin)*(outmax-outmin)) / (inputmax-inputmin)+outmin;}

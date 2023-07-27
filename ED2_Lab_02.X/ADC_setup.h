@@ -18,6 +18,7 @@ void adc_init(int channel);
 int adc_read();
 void adc_change_channel(int channel);
 int adc_get_channel();
+int map_adc_volt(int value, int inputmin, int inputmax, int outmin, int outmax); // Funcion para mappear el adc a voltaje 
 
 #endif	/* ADC_SETUP_H */
 
